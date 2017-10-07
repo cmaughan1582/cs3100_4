@@ -27,7 +27,6 @@ int main(){
     
     cout<<prompt;
     getline(cin, test);
-    history.push_back(test);
     
     while(test.substr(0, 4) != "exit"){
         if(fork()){
@@ -39,6 +38,33 @@ int main(){
         }
         else{
             args = splitString(test, ' ');
+            if(args[0] == "^"){
+                if(history.size() == 0){
+                    cout<<helpText<<endl;
+                    return 0;
+                }
+                int numBack;
+                try{
+                    numBack = stoi(args[1]);
+                }catch(exception& e){
+                    cout<<helpText<<endl;
+                    history.pop_back();
+                    return 0;
+                }
+                if(numBack == 0){
+                    cout<<helpText<<endl;
+                    return 0;
+                }
+                else if(numBack > history.size()){
+                    cout<<helpText<<endl;
+                    return 0;
+                }
+                
+                else{
+                    test = history[numBack - 1];
+                }
+            }
+            args = splitString(test, ' ');
             childexec(args);
             if(args[0] == "ptime"){
                 cout<<"The total time spent executing child processes is: "<<totaltime.count()<<" seconds"<<endl;
@@ -46,36 +72,22 @@ int main(){
             }
             else if(args[0] == "history"){
                 cout<<"--History--"<<endl<<endl;
-                for(int i = 0; i < history.size() - 1; i++){
+                for(int i = 0; i < history.size(); i++){
                     cout<<i+1<<". "<<history[i]<<endl;
                 }
                 return 0;
             }
-            else if(args[0] == "^"){
-                int numBack;
-                try{
-                    numBack = stoi(args[1]);
-                }catch(exception& e){
-                    cout<<helpText<<endl;
-                    return 0;
-                }
-                if(numBack == 0){
-                    cout<<helpText<<endl;
-                    return 0;
-                }
-                else{
-                    cout<<history[numBack - 1]<<endl;
-                    return 0;
-                }
-            }
             cout<<helpText<<endl;
             return 0;
         }
-        
+        if(test.at(0) == '^'){
+            
+        }
+        else{
+            history.push_back(test);
+        }
         cout<<prompt;
         getline(cin, test);
-        history.push_back(test);
-        
     }
 
     return 0;
