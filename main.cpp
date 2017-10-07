@@ -59,8 +59,14 @@ int main(){
                     cout<<helpText<<endl;
                     return 0;
                 }
-                cout<<history[history.size()-1-numBack]<<endl;
-                return 0;
+                if(numBack == 0){
+                    cout<<helpText<<endl;
+                    return 0;
+                }
+                else{
+                    cout<<history[numBack - 1]<<endl;
+                    return 0;
+                }
             }
             cout<<helpText<<endl;
             return 0;
