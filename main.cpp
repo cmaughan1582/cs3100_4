@@ -52,7 +52,7 @@ int main(){
             }catch(exception& e){
                 
             }
-            if(pushNum != 0){
+            if(pushNum > 0 && pushNum < history.size()){
                 test = history[pushNum - 1];
                 history.push_back(test);
             }
