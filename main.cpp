@@ -9,23 +9,31 @@
 #include <chrono>
 #include <cmath>
 #include <stdexcept>
+#include <signal.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <string.h>
+#include <string>
 
 using namespace std;
 
 vector<string> splitString(string txt, char space);
 void childexec(vector<string> vecs);
 void childFunc(string test, vector<string> history, vector<string> args, chrono::duration<double> totaltime, chrono::duration<double> time1);
+string workdir();
 
 int main(){
     
-    string prompt = "[cmd]:";
+    string prompt = "[" + workdir() + "]: ";
     vector<string>args;
     vector<string>history;
-    string test = "";
+    string test = " ";
     string helpText = "That command was not found";
     int pushNum = 0;
     chrono::duration<double> time1;
     chrono::duration<double> totaltime;
+    
+    signal(SIGINT, SIG_IGN);
     
     cout<<prompt;
     getline(cin, test);
@@ -43,7 +51,7 @@ int main(){
             return 0;
         }
         
-        
+        if(test.size()>0){
         if(test.at(0) == '^'){
             pushNum = 0;
             args = splitString(test, ' ');
@@ -60,6 +68,7 @@ int main(){
         else{
             history.push_back(test);
         }
+        }
         cout<<prompt;
         getline(cin, test);
     }
@@ -73,7 +82,7 @@ vector<string> splitString(string str, char space)
     int pos = str.find(space);
     int initialPos = 0;
     vector<string> vecs;
-    string test = "";
+    string test = " ";
     
 
     while( pos != string::npos ) {
@@ -142,6 +151,25 @@ void childFunc(string test, vector<string> history, vector<string> args, chrono:
         }
         return;
     }
+    else if(args[0] == "cd"){
+        string change = workdir() + "/" + args[1];
+        cout<<change<<endl;
+        char* directory = new char[change.length()+1];
+        strcpy(directory, change.c_str());
+        int help;
+        help = chdir(directory);
+        cout<<workdir()<<endl;
+        return;
+        
+    }
     cout<<helpText1<<endl;
     return;
+}
+
+string workdir(){
+    char ch[FILENAME_MAX];
+    char* str = getcwd(ch, FILENAME_MAX);
+    string cwd(str);
+    return cwd;
+
 }

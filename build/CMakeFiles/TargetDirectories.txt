@@ -1,3 +1,1 @@
-/home/pi/School/Assign3/3100_assign3/build/CMakeFiles/edit_cache.dir
-/home/pi/School/Assign3/3100_assign3/build/CMakeFiles/rebuild_cache.dir
-/home/pi/School/Assign3/3100_assign3/build/CMakeFiles/assign3.dir
+/home/ubuntu/workspace/build/CMakeFiles/assign4.dir
