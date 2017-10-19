@@ -21,6 +21,7 @@ vector<string> splitString(string txt, char space);
 void childexec(vector<string> vecs);
 void childFunc(string test, vector<string> history, vector<string> args, chrono::duration<double> totaltime, chrono::duration<double> time1);
 string workdir();
+void changedir(vector<string> args);
 
 int main(){
     
@@ -42,6 +43,11 @@ int main(){
         if(fork()){
             chrono::time_point<chrono::high_resolution_clock> start = chrono::high_resolution_clock::now();
             wait(NULL);
+            args = splitString(test, ' ');
+            if(args[0]=="cd"){
+                changedir(args);
+                
+            }
             chrono::time_point<chrono::high_resolution_clock> end = chrono::high_resolution_clock::now();
             time1 = end - start;
             totaltime += time1;
@@ -69,6 +75,7 @@ int main(){
             history.push_back(test);
         }
         }
+        prompt = "[" + workdir() + "]: ";
         cout<<prompt;
         getline(cin, test);
     }
@@ -152,15 +159,7 @@ void childFunc(string test, vector<string> history, vector<string> args, chrono:
         return;
     }
     else if(args[0] == "cd"){
-        string change = workdir() + "/" + args[1];
-        cout<<change<<endl;
-        char* directory = new char[change.length()+1];
-        strcpy(directory, change.c_str());
-        int help;
-        help = chdir(directory);
-        cout<<workdir()<<endl;
         return;
-        
     }
     cout<<helpText1<<endl;
     return;
@@ -172,4 +171,15 @@ string workdir(){
     string cwd(str);
     return cwd;
 
+}
+
+void changedir(vector<string> args){
+    string change = workdir() + "/" + args[1];
+                char* directory = new char[change.length()+1];
+                strcpy(directory, change.c_str());
+                int help;
+                help = chdir(directory);
+                if(help==-1){
+                    cout<<"That is not a valid directory"<<endl;
+                }
 }
