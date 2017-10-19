@@ -119,6 +119,46 @@ void childexec(vector<string> vecs){
 void childFunc(string test, vector<string> history, vector<string> args, chrono::duration<double> totaltime, chrono::duration<double> time1){
     args = splitString(test, ' ');
     string helpText1 = "That command was not found";
+    for(int i=0; i < args.size(); i++){
+        if(args[i]=="|"){
+            vector<string>arg1;
+            vector<string>arg2;
+            int spot = i;
+            for(int j=0; j < spot; j++){
+                arg1.push_back(args[j]);
+            }
+            for(int k = spot + 1; k < args.size(); k++){
+                arg2.push_back(args[k]);
+            }
+            int fd[2];
+            int in = 0;
+            pipe(fd);
+            if(fork()){
+                close(STDOUT_FILENO);
+                dup(fd[1]);
+                close(fd[0]);
+                close(fd[1]);
+                childexec(arg1);
+            }
+            wait(NULL);
+            if(fork()){
+                close(STDIN_FILENO);
+                dup(fd[0]);
+                close(fd[1]);
+                close(fd[0]);
+                childexec(arg2);
+                
+            }
+            wait(NULL);
+            close(fd[0]);
+            close(fd[1]);
+            
+            return;
+        }
+        else{
+            
+        }
+    }
     if(args[0] == "^"){
         if(history.size() == 0){
             cout<<helpText1<<endl;
